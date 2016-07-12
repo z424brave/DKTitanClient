@@ -1,0 +1,41 @@
+
+<h1>Tag List</h1>
+<div class="row">
+    <div class="form-inline">
+        <button type="submit" class="btn btn-success pull-right" (click)="createTag()">Add tag</button>
+    </div>
+</div>
+<div class="tag-table">
+    <h3>Tags</h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Tag Name</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Capture Value</th>
+            <th>Last Updated</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let tag of tags | paginate: { itemsPerPage: 6, currentPage: p }" (click)="onSelectTag(tag)" >
+            <td>
+                <h4><b>{{tag.name}}</b></h4>
+            </td>
+            <td>
+                {{tag.description}}
+            </td>
+            <td>
+                {{tag.status}}
+            </td>
+            <td>
+                {{tag.requiresValue}}
+            </td>
+            <td>
+                {{tag.updated | isoDate: "d mmmm yyyy h:MM:ss TT"}}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<pagination-controls (pageChange)="p = $event" autoHide="true"></pagination-controls>

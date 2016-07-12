@@ -1,0 +1,32 @@
+<h1>Edit channel</h1>
+
+<div *ngIf="channel">
+    <form [ngFormModel]="channelForm" (submit)="submitChannel($event)" class="channel-form" novalidate>
+        <div *ngIf="submitted && !channelForm.valid "
+             class="form-error-message">Please fill all the fields
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="InputChannelName">Channel Name</label>
+                    <input type="text" [(ngModel)]="channel.name" [ngFormControl]="channelForm.controls['name']"
+                           class="form-control" required id="InputChannelName"
+                           placeholder="Name">
+                </div>
+                <div class="form-group">
+                    <label for="InputDriver">Channel Type</label>
+                    <select class="form-control" id="InputDriver"
+                            [(ngModel)]="channel.driver" required
+                            [ngFormControl]="channelForm.controls['driver']" placeholder="Channel Type">
+                        <option *ngFor="let driver of drivers" [value]="driver">{{driver}}</option>
+                    </select>
+
+                </div>
+            </div>
+        </div>
+        <div class="form-buttons">
+            <input class="btn btn-success" type="submit" value="Submit">
+            <button class="btn btn-default" (click)="cancel($event)">Cancel</button>
+        </div>
+    </form>
+</div>

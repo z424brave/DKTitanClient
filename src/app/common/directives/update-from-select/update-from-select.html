@@ -1,0 +1,14 @@
+<div class="tag-input dropdown form-control">
+    <span class="dropdown-toggle" data-toggle="dropdown">
+        <ul class="selected-tag-list">
+            <li *ngFor="let selectedValue of ( allValues | SelectedValuePipe: true )">
+                <span class="tag-delete" (click)="deSelect(selectedValue)">x</span>
+                <span>{{selectedValue.name}}</span>
+            </li>
+        </ul>
+        <span class="caret"></span>
+    </span>
+    <ul class="dropdown-menu">
+        <li *ngFor="let availableValue of ( allValues | SelectedValuePipe: false )" (click)="select(availableValue)" class="tag">{{availableValue.name}}</li>
+    </ul>
+</div>

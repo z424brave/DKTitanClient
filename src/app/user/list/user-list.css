@@ -1,0 +1,18 @@
+td:hover {
+    cursor: pointer;
+}
+
+.selected-tag-list {
+    list-style: none;
+    padding: 0;
+}
+
+.selected-tag-list li {
+    float: left;
+    border: 1px solid gray;
+    border-radius: 4px;
+    background-color: #d8d8d8;
+    padding: 0 10px;
+    font-weight: bold;
+    margin-right: 10px;
+}

@@ -1,0 +1,11 @@
+        <ul>
+            <li *ngFor="let node of nodes">
+                <span *ngIf="node.showIcon" (click)="node.expand()" class="iconButton
+                    {{node.expanded ? 'glyphicon glyphicon-folder-open' : 'glyphicon glyphicon-folder-close'}}">
+                </span>
+                <span (click)="selectNode(node); node.expand();">{{ node.name }}</span>
+                <div *ngIf="node.expanded">
+                    <tree-view [root]="node"></tree-view>
+                </div>
+            </li>
+        </ul>

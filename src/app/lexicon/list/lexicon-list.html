@@ -1,0 +1,42 @@
+<h1>Lexicon List</h1>
+<div class="row">
+    <div class="col-md-12">
+        <label>&nbsp;</label>
+        <div class="form-inline">
+            <input type="text" [(ngModel)]="newLexicon.name" class="form-control text-input pull-right" style="margin-right: 0px;">
+            <button type="submit" class="btn btn-success pull-right" (click)="createLexicon()">Create lexicon</button>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="tag-table">
+        <h3>Lexicons</h3>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Lexicon Name</th>
+                <th>Lexicon Description</th>
+                <th>Lexicon Status</th>
+                <th>Last Updated</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let lexicon of lexicons | paginate: { itemsPerPage: 6, currentPage: p }" (click)="onSelectLexicon(lexicon)">
+                <td>
+                    <h4><b>{{lexicon.name}}</b></h4>
+                </td>
+                <td>
+                    {{lexicon.description}}
+                </td>
+                <td>
+                    {{lexicon.status}}
+                </td>
+                <td>
+                    {{lexicon.updated}}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <pagination-controls (pageChange)="p = $event" autoHide="true"></pagination-controls>
+</div>

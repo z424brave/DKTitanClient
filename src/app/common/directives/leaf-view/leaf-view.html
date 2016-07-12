@@ -1,0 +1,5 @@
+<div class="wrap">
+    <image-box *ngFor="let leaf of leafs | paginate: { itemsPerPage: leafsPerPage, currentPage: p }" [imageFileName]="leaf.key">
+    </image-box>
+</div>
+<pagination-controls *ngIf="leafs.length" (pageChange)="p = $event" autoHide="true"></pagination-controls>

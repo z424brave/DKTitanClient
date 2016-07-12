@@ -1,0 +1,19 @@
+.row {
+    margin-bottom: 20px;
+}
+
+.pull-right {
+    margin-left: 4px;
+}
+
+.new-media {
+    height: 50px;
+}
+
+.new-media-btn {
+    float: right;
+}
+
+.new-folder-btn {
+    float: left;
+}

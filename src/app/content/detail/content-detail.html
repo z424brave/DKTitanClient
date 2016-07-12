@@ -1,0 +1,83 @@
+<form (ngSubmit)="onSubmit(contentForm.valid)" #contentForm="ngForm" class="content-form" novalidate>
+    <div *ngIf="submitted && !contentForm.valid"
+         class="form-error-message">Please fill all the fields
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="InputContentTitle">Title</label>
+                <input type="text" [(ngModel)]="contentNode.name" ngControl="name"
+                       class="form-control" id="InputContentTitle"
+                       placeholder="Title" required>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group" *ngIf="isNewContentNode">
+                <label for="InputType">Type</label>
+                <select class="form-control" required id="InputType" [ngModel]="type"
+                        (ngModelChange)="onTypeChanged($event)"
+                        ngControl="type">
+                    <option *ngFor="let contentType of contentTypes" [value]="contentType">{{contentType}}</option>
+                </select>
+            </div>
+            <div class="form-group" *ngIf="!isNewContentNode">
+                <label for="InputTypeTxt">Type</label>
+                <input type="text" [(ngModel)]="contentNode.applicationType.name" ngControl="type"
+                       class="form-control" id="InputTypeTxt"
+                       placeholder="Type" readonly>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="form-group">
+                <label>Tags</label>
+                <update-from-select [allValues]="allValues"></update-from-select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+    <div class="form-buttons">
+        <button type="submit" class="btn btn-success">{{saveAction}}</button>
+        <button class="btn btn-default" (click)="translate($event)">Translate</button>
+        <button class="btn btn-default" (click)="publish($event)">Publish</button>
+        <button class="btn btn-default" (click)="cancel($event)">Cancel</button>
+    </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <tabset>
+                <tab *ngFor="let languageTab of languageTabs"
+                    [heading]="languageTab.title"
+                    [active]="languageTab.active"
+                    (deselect)="languageTab.active = false"
+                    (select)="selectTab(languageTab)"
+                    [disabled]="languageTab.disabled">
+                    <div class="row" *ngIf="languageTab.title==='text/html'">
+                        <div class="col-md-8" *ngFor="let textNode of textNodes">
+                            <div class="form-group">
+                                <label>{{textNode.name}}</label>
+                                <input type="text" [ngModel]="textNode.content[0].media[0].content"
+                                       class="form-control" value="textNode.content[0].media[0].content" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="!(languageTab.title==='text/html')">
+                        <div class="col-md-8" *ngFor="let imageNode of imageNodes">
+                            <div *ngIf="imageNode.content[0].media[0].content">
+                                <image-box [imageFileName]="imageNode.content[0].media[0].content"></image-box>
+                            </div>
+                            <div *ngIf="!imageNode.content[0].media[0].content" class="row">
+                                <file-upload (onUploaded)="onUploaded($event)" (onFileNameSaved)="onFileNameSaved($event)"></file-upload>
+                            </div>
+                        </div>
+                    </div>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+
+    <content-publish></content-publish>
+    <content-editjson></content-editjson>
+
+</form>

@@ -1,0 +1,156 @@
+<form (ngSubmit)="onSubmit(contentForm.valid)" #contentForm="ngForm" class="content-form" novalidate>
+    <div *ngIf="submitted && !contentForm.valid"
+         class="form-error-message">Please fill all the fields
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div *ngIf="currentVersion" class="form-group">
+                <label for="InputContentTitle">Title</label>
+                <input type="text" [(ngModel)]="node.name" ngControl="name"
+                       class="form-control" id="InputContentTitle"
+                       placeholder="Title" required>
+            </div>
+            <div *ngIf="!currentVersion" class="form-group">
+                <label for="InputContentTitle2">Title</label>
+                <input type="text" [(ngModel)]="node.name" ngControl="name"
+                       class="form-control" id="InputContentTitle2"
+                       placeholder="Title" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group" *ngIf="isNewNode">
+                <label for="InputType">Type</label>
+                <select class="form-control" required id="InputType" [ngModel]="type"
+                        (ngModelChange)="onTypeChanged($event)"
+                        ngControl="type">
+                    <option *ngFor="let type of types" [value]="type">{{type}}</option>
+                </select>
+            </div>
+            <div class="form-group" *ngIf="!isNewNode">
+                <label for="InputTypeTxt">Type</label>
+                <input type="text" [(ngModel)]="node.type" ngControl="type"
+                       class="form-control" id="InputTypeTxt"
+                       placeholder="Type" readonly>			
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="form-group">
+                <label>Tags</label>
+                <update-from-select [allValues]="allValues"></update-from-select>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="currentVersion" class="form-group">
+        <label for="InputVersionMessage">Version message</label>
+        <input type="text"
+               [(ngModel)]="content.versionMessage"
+               ngControl="content.versionMessage"
+               class="form-control" id="InputVersionMessage"
+               placeholder="Version message" required>
+    </div>
+    <div *ngIf="!currentVersion" class="form-group">
+        <label for="InputVersionMessage2">Version message</label>
+        <input type="text"
+               [(ngModel)]="content.versionMessage"
+               ngControl="content.versionMessage"
+               class="form-control" id="InputVersionMessage2"
+               placeholder="Version message" readonly>
+    </div>
+    <div class="row" *ngIf="( node.type==='text' || node.type==='html' )">
+        <div class="col-md-8">
+            <tabset>
+                <tab *ngFor="let languageTab of languageTabs"
+                     [heading]="languageTab.title"
+                     [active]="languageTab.active"
+                     (deselect)="languageTab.active = false"
+                     (select)="selectTab(languageTab)"
+                     [disabled]="languageTab.disabled">
+                    <inline-editor [(ngModel)]="editorContent" (change)="editorContentChanged($event)" [config]="{uiColor: '#99000', readOnly: !currentVersion}">
+                    </inline-editor>
+                </tab>
+			</tabset>
+		</div>
+        <div *ngIf="!isNewNode" class="col-md-4">
+            <h3>History</h3>
+            <ul class="fa-ul">
+                <li *ngFor="let content of node.content | versionSort" class="content-version">
+                    <span (click)="changeVersion(content)">
+                        <i class="fa-li fa fa-file-code-o"></i>
+                        {{content.versionNo}} - {{content.versionMessage}}
+                    </span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row" *ngIf="( node.type==='json' )">
+        <div class="col-md-8">
+            <tabset>
+                <tab *ngFor="let languageTab of languageTabs"
+                     [heading]="languageTab.title"
+                     [active]="languageTab.active"
+                     (deselect)="languageTab.active = false"
+                     (select)="selectTab(languageTab)"
+                     [disabled]="languageTab.disabled">
+                    <textarea [(ngModel)]="editorContent" (change)="editorContentChanged($event)" class="json-textarea" >
+                    </textarea>
+                </tab>
+            </tabset>
+        </div>
+        <div *ngIf="!isNewNode" class="col-md-4">
+            <h3>History</h3>
+            <ul class="fa-ul">
+                <li *ngFor="let content of node.content | versionSort" class="content-version">
+                    <span (click)="changeVersion(content)">
+                        <i class="fa-li fa fa-file-code-o"></i>
+                        {{content.versionNo}} - {{content.versionMessage}}
+                    </span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row" *ngIf="(node.type==='image')">
+            <div class="col-md-8">
+                <tabset>
+                    <tab *ngFor="let languageTab of languageTabs"
+                         [heading]="languageTab.title"
+                         [active]="languageTab.active"
+                         (deselect)="languageTab.active = false"
+                         (select)="selectTab(languageTab)"
+                         [disabled]="languageTab.disabled">
+                        <div *ngIf="languageTab.content">
+                            <image-box [imageFileName]="languageTab.content"></image-box>
+                        </div>
+                        <div *ngIf="!languageTab.content" class="row">
+                            <file-upload (onUploaded)="onUploaded($event)" (onFileNameSaved)="onFileNameSaved($event)"></file-upload>
+                        </div>
+                    </tab>
+                </tabset>
+            </div>
+        <div *ngIf="!isNewNode" class="col-md-4">
+            <h3>History</h3>
+            <ul class="fa-ul">
+                <li *ngFor="let content of node.content | versionSort" class="content-version">
+                    <span (click)="changeVersion(content)">
+                        <i class="fa-li fa fa-file-code-o"></i>
+                        {{content.versionNo}} - {{content.versionMessage}}
+                    </span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="form-buttons">
+        <button *ngIf="currentVersion" type="submit" class="btn btn-success">{{saveAction}}</button>
+        <button *ngIf="(( currentVersion && node.content[0]) && (!node.content[0].translated && !node.content[0].sentForTranslation))"
+                class="btn btn-default" (click)="translate($event)">Translate</button>
+        <button *ngIf="( currentVersion  )" class="btn btn-default" (click)="publish($event)">Publish</button>
+        <button class="btn btn-default" (click)="cancel($event)">Cancel</button>
+    </div>
+    <div class="form-buttons-left">
+        <button *ngIf="( currentVersion && node.type==='json')" (click)="editJson($event)" class="btn btn-success">Edit</button>
+    </div>
+    <content-publish></content-publish>
+    <content-editjson></content-editjson>
+</form>

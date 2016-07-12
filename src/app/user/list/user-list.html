@@ -1,0 +1,32 @@
+<h1>User list</h1>
+
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Status</th>
+        <th>Last Login</th>		
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let user of users | nameSort" (click)="onSelect(user)">
+        <td>{{user.name}}</td>
+        <td>{{user.email}}</td>
+        <td>
+            <ul class="selected-tag-list">
+                <li *ngFor="let role of user.roles">
+                    <span>{{role}}</span>
+                </li>
+            </ul>
+        </td>
+        <td>{{user.status}}</td>
+        <td>{{user.lastLogin | isoDate: "d mmmm yyyy h:MM:ss TT"}}</td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="form-buttons">
+    <input class="btn btn-success" type="submit" value="Create User" (click)="newUser()">
+</div>

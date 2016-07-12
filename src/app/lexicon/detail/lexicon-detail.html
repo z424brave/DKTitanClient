@@ -1,0 +1,67 @@
+<h1>Lexicon Detail</h1>
+
+<div *ngIf="lexicon">
+
+    <form [ngFormModel]="lexiconForm" (submit)="submitLexicon($event)" class="user-form" novalidate>
+        <div *ngIf="submitted && !lexiconForm.valid "
+             class="form-error-message">Please complete all the fields
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="InputLexiconName">Lexicon Name</label>
+                    <input type="text" [(ngModel)]="lexicon.name" [ngFormControl]="lexiconForm.controls['name']"
+                           class="form-control" required id="InputLexiconName"
+                           placeholder="Name">
+                </div>
+
+                <div class="form-group">
+                    <label for="InputDescription">Lexicon Description</label>
+                    <input type="text" [(ngModel)]="lexicon.description" [ngFormControl]="lexiconForm.controls['description']"
+                           class="form-control" required id="InputDescription"
+                           placeholder="Description">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="InputStatus">Status</label>
+                    <select class="form-control" required id="InputStatus" [(ngModel)]="lexicon.status"
+                            [ngFormControl]="lexiconForm.controls['status']">
+                        <option *ngFor="let status of statuses" [value]="status">{{status}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-buttons">
+            <input class="btn btn-success" type="submit" value="Submit">
+            <button class="btn btn-default" (click)="cancel($event)">Cancel</button>
+        </div>
+    </form>
+    
+    <div class="tag-table">
+        <h3>Tags</h3>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Tag Name</th>
+                <th>Tag Description</th>
+                <th>Remove</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let tag of tags | paginate: { itemsPerPage: 6, currentPage: p }" >
+                <td>
+                    <h4><b>{{tag.name}}</b></h4>
+                </td>
+                <td>
+                    {{tag.description}}
+                </td>
+                <td class="delete-cell">
+                    <i (click)="removeTag(tag._id)" class="fa fa-minus-square"></i>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <pagination-controls (pageChange)="p = $event" autoHide="true"></pagination-controls>
+</div>

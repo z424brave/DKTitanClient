@@ -1,46 +1,46 @@
 <h1>Tag Details</h1>
-
 <div *ngIf="tag">
-    <form [ngFormModel]="tagForm" (submit)="submitTag($event)" class="user-form" novalidate>
-        <div *ngIf="submitted && !tagForm.valid "
-             class="form-error-message">Please fill all the fields
-        </div>
-        <div class="row">
-            <div class="col-md-8">
-                <div class="form-group">
-                    <label for="InputTagName">Tag Name</label>
-                    <input type="text" [(ngModel)]="tag.name" [ngFormControl]="tagForm.controls['name']"
-                           class="form-control" required id="InputTagName"
-                           placeholder="Name">
+        <form (ngSubmit)="submitTag($event)" class="user-form" novalidate>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="InputTagName">Tag Name</label>
+                        <input type="text" [(ngModel)]="tag.name"
+                               class="form-control" required id="InputTagName"
+                               placeholder="Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="InputDescription">Tag Description</label>
+                        <input type="text" [(ngModel)]="tag.description"
+                               class="form-control" required id="InputDescription"
+                               placeholder="Description">
+                    </div>
+                    <div class="form-group">
+                        <label for="InputLexicon">Lexicon</label>
+                        <select class="form-control" id="InputLexicon" [ngModel]="selectedLexicon"
+                                (ngModelChange)="onChangeLexicon($event)">
+                            <option *ngFor="let lexicon of lexicons" [value]="lexicon._id">{{lexicon.name}}</option>
+                        </select>
+                    </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="InputDescription">Tag Description</label>
-                    <input type="text" [(ngModel)]="tag.description" [ngFormControl]="tagForm.controls['description']"
-                           class="form-control" required id="InputDescription"
-                           placeholder="Description">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="InputStatus">Status</label>
+                        <select class="form-control" required id="InputStatus" [(ngModel)]="tag.status">
+                            <option *ngFor="let status of statuses" [value]="status">{{status}}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="InputCaptureValue">Capture Value</label>
+                        <select class="form-control" required id="InputCaptureValue" [(ngModel)]="tag.requiresValue">
+                            <option *ngFor="let booleanValue of trueOrFalse" [value]="booleanValue">{{booleanValue}}</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="InputStatus">Status</label>
-                    <select class="form-control" required id="InputStatus" [(ngModel)]="tag.status"
-                            [ngFormControl]="tagForm.controls['status']">
-                        <option *ngFor="let status of statuses" [value]="status">{{status}}</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="InputCaptureValue">Capture Value</label>
-                    <select class="form-control" required id="InputCaptureValue" [(ngModel)]="tag.requiresValue"
-                            [ngFormControl]="tagForm.controls['requiresValue']">
-                        <option *ngFor="let booleanValue of trueOrFalse" [value]="booleanValue">{{booleanValue}}</option>
-                    </select>
-                </div>
+            <div class="form-buttons">
+                <input class="btn btn-success" type="submit" value="Submit">
+                <button class="btn btn-default" (click)="cancel($event)">Cancel</button>
             </div>
-        </div>
-        <div class="form-buttons">
-            <input class="btn btn-success" type="submit" value="Submit">
-            <button class="btn btn-default" (click)="cancel($event)">Cancel</button>
-        </div>
-    </form>
+        </form>
 </div>

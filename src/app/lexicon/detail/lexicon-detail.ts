@@ -18,6 +18,7 @@ import {authCheck} from '../../auth/auth-check';
 import {MainMenu} from '../../menu/menu-component';
 import {UpdateTextfield} from '../../common/directives/update-textfield/update-textfield';
 import {PaginatePipe, PaginationControlsCmp, PaginationService} from 'ng2-pagination';
+import {SearchNode} from "../../common/model/node/search-node";
 
 let _ = require('lodash');
 
@@ -44,9 +45,11 @@ export class LexiconDetail implements OnInit {
     statuses = ['active', 'deleted'];
     submitted: boolean = false;
     confirmDelete: boolean;
+    searchNode: SearchNode;
 
     constructor(private _formBuilder: FormBuilder,
                 private _lexiconService: LexiconService,
+                private _tagService: TagService,
                 private _routeParams: RouteParams,
                 private _router: Router) {
 
@@ -54,6 +57,21 @@ export class LexiconDetail implements OnInit {
 
     ngOnInit() {
         console.log(`In OnInit in lexicon`);
+        this.searchNode =  new SearchNode();
+        let id = this._routeParams.get('id');
+        if (id) {
+            this.searchNode.lexicon = id;
+        }
+        console.log(`Search params are : ${JSON.stringify(this.searchNode)}`);
+        this._tagService.getTags(this.searchNode).subscribe(
+            data => {
+                this.tags = data;
+                this._init();
+            }
+        );
+    }
+
+    private _init() {
         let id = this._routeParams.get('id');
         if (id) {
             this._getLexicon(id);
@@ -61,10 +79,8 @@ export class LexiconDetail implements OnInit {
             this.lexicon = new Lexicon();
             this._initForm();
         }
-
     }
-
-    _initForm() {
+    private _initForm() {
         console.log('initiating form: ' + JSON.stringify(this.lexicon));
         this.lexiconForm = this._formBuilder.group({
             name: ['', Validators.required],
@@ -105,8 +121,8 @@ export class LexiconDetail implements OnInit {
             );
     }
 
-    deleteTag(tagId: string) {
-        console.log(`In deleteTag in Lexicon - ${tagId}`);
+    removeTag(tagId: string) {
+        console.log(`In removeTag in Lexicon - ${tagId}`);
     }
 
     submitLexicon(value) {

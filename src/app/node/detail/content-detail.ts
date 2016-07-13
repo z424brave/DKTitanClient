@@ -27,6 +27,7 @@ import {TreeView} from "../../common/directives/tree-view/tree-view";
 import {TreeNodeService} from "../../common/service/tree-node-service";
 import {ContentPublish} from "./publish/content-publish";
 import {ContentEditjson} from "./edit/content-editjson";
+import {SearchNode} from "../../common/model/node/search-node";
 
 let _ = require('lodash');
 
@@ -111,7 +112,7 @@ export class ContentDetail implements OnInit {
     private _getAllTags() {
 
         console.log(`in content-details / _getAllTags`);
-        this._tagService.getTags().subscribe(
+        this._tagService.getTags(new SearchNode()).subscribe(
             data => {
 
                 let tags = _.flatMap(_.map(data, 'tags'));

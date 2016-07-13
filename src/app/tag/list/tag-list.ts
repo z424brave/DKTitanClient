@@ -13,13 +13,14 @@ import {MainMenu} from '../../menu/menu-component';
 import {UpdateTextfield} from '../../common/directives/update-textfield/update-textfield';
 import {PaginatePipe, PaginationControlsCmp, PaginationService} from 'ng2-pagination';
 import {IsoDatePipe} from "../../common/iso-date-pipe";
+import {SearchNode} from "../../common/model/node/search-node";
 
 let _ = require('lodash');
 
 @Component({
     template: require('./tag-list.html'),
     styles: [require('./tag-list.css'), require('../../app.css')],
-    providers: [TagService, PaginationService],
+    providers: [PaginationService],
     directives: [UpdateTextfield, MainMenu, CORE_DIRECTIVES, FORM_DIRECTIVES,PaginationControlsCmp],
     pipes: [PaginatePipe, IsoDatePipe]
 })
@@ -33,6 +34,7 @@ export class TagList implements OnInit {
     tags: Tag[];
 
     newTag: Tag;
+    searchNode: SearchNode;
 
     constructor(private _tagService: TagService,
                 private _router: Router) {
@@ -40,13 +42,15 @@ export class TagList implements OnInit {
     }
 
     ngOnInit() {
+        this.searchNode = new SearchNode();
         this.init();
 
     }
 
     init() {
         console.log(`In init in Tag`);
-        this._tagService.getTags()
+
+        this._tagService.getTags(this.searchNode)
             .subscribe(
                 data => this.tags = data
             );

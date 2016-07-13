@@ -7,6 +7,8 @@ import {API_ENDPOINT} from '../../config';
 import {NotificationService} from './notification-service';
 import {Tag} from '../model/lexicon/tag';
 import {Lexicon} from '../model/lexicon/lexicon';
+import {URLSearchParams} from "@angular/http";
+import {SearchNode} from "../model/node/search-node";
 
 @Injectable()
 export class TagService {
@@ -22,7 +24,31 @@ export class TagService {
         console.log(`In tag-service - selected tags set to size ${this._selectedTags.length}`);
 
     }
+    static convertSearchToQuery(searchNode: SearchNode) : URLSearchParams {
 
+        let params: URLSearchParams = new URLSearchParams();
+
+        for (var property in searchNode) {
+            if (searchNode.hasOwnProperty(property)) {
+
+                console.log(`${property} : ${searchNode[property]}`);
+
+                if (searchNode[property]) {
+
+                    if (searchNode[property] instanceof Array) {
+                        if (searchNode[property].length > 0) {
+                            params.set(property, searchNode[property]);
+                        }
+                    } else {
+                        params.set(property, searchNode[property]);
+                    }
+
+                }
+            }
+        }
+
+        return params;
+    }
     getSelectedTags() : Array<string> {
 
         return this._selectedTags;
@@ -108,12 +134,12 @@ export class TagService {
 
     }
 
-    getTags() {
+    getTags(searchNode: SearchNode) {
 
         console.log(`In getTags`);
 
         return Observable.create(observer => {
-                this._httpClient.get(this.baseUrl.concat('list'))
+            this._httpClient.getQuery(this.baseUrl.concat('list'), TagService.convertSearchToQuery(searchNode))
                     .map((responseData) => {
                         return responseData.json();
                     })

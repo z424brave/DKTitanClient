@@ -158,7 +158,7 @@ export class ContentList implements OnInit {
     private _getAllTags() {
 
         console.log(`in content-list / getAllTags`);
-        this._tagService.getTags().subscribe(
+        this._tagService.getTags(new SearchNode()).subscribe(
             data => {
 
                 let tags = _.flatMap(_.map(data, 'tags'));

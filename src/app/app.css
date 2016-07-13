@@ -20,6 +20,10 @@ notification-center {
 
 }
 
+td:hover {
+    cursor: pointer;
+}
+
 .form-error-message {
     color: #c10000;
     font-size: larger;
@@ -50,4 +54,12 @@ notification-center {
 .delete-cell i:hover {
     color: #c10000;
 
+}
+
+.new-content-btn {
+    height: 50px;
+}
+
+.new-content-btn .btn {
+    float: right;
 }

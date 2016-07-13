@@ -9,11 +9,12 @@ import {TagList} from './list/tag-list';
 import {TagDetail} from './detail/tag-detail';
 import {MainMenu} from '../menu/menu-component';
 import {authCheck} from '../auth/auth-check';
+import {LexiconService} from "../common/service/lexicon-service";
 
 @Component({
     template: require('./tag-component.html'),
     directives: [ROUTER_DIRECTIVES, MainMenu],
-    providers: [TagService]
+    providers: [TagService, LexiconService]
 })
 
 @RouteConfig([

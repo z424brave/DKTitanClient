@@ -34,28 +34,26 @@ export class LexiconList implements OnInit {
     }
 
     ngOnInit() {
-        this.init();
-
+        this._init();
     }
 
-    init() {
+    private _init() {
         console.log(`In init in lexicon list`);
         this._lexiconService.getLexicons()
             .subscribe(
-                data => this.lexicons = data
+                data => {
+                    this.lexicons = data;
+                }
             );
         this.newLexicon = new Lexicon();
     }
 
     createLexicon() {
-
         this._router.navigate(['LexiconDetail', {id: undefined}]);
-
     }
+
     onSelectLexicon(lexicon) {
-
         this._router.navigate(['LexiconDetail', {id: lexicon._id}]);
-
     }
 
 }

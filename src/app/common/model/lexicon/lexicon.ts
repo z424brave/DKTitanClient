@@ -6,7 +6,7 @@ export class Lexicon extends BaseEntity {
     name: string;
     description: string;
     status: string;
-    tags: [Tag];
+    // tags: [Tag];
     constructor() {
         super();
     }

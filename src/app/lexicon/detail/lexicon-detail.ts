@@ -61,14 +61,17 @@ export class LexiconDetail implements OnInit {
         let id = this._routeParams.get('id');
         if (id) {
             this.searchNode.lexicon = id;
+            console.log(`Search params are : ${JSON.stringify(this.searchNode)}`);
+            this._tagService.getTags(this.searchNode).subscribe(
+                data => {
+                    this.tags = data;
+                    this._init();
+                }
+            );
+        } else {
+            this._init();
         }
-        console.log(`Search params are : ${JSON.stringify(this.searchNode)}`);
-        this._tagService.getTags(this.searchNode).subscribe(
-            data => {
-                this.tags = data;
-                this._init();
-            }
-        );
+
     }
 
     private _init() {
@@ -121,8 +124,9 @@ export class LexiconDetail implements OnInit {
             );
     }
 
-    removeTag(tagId: string) {
-        console.log(`In removeTag in Lexicon - ${tagId}`);
+    onSelectTag(tagId: string) {
+        console.log(`In selectTag in Lexicon - ${tagId}`);
+//        this._router.navigate(['TagDetail', {id: tagId}]);
     }
 
     submitLexicon(value) {

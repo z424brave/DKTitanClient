@@ -23,8 +23,8 @@
         <div class="col-sm-4">
             <div class="form-group">
                 <label for="InputType">Type</label>
-                <select class="form-control" id="InputType" [(ngModel)]="searchNode.type">
-                    <option *ngFor="let type of types" [value]="type" (select)="searchNode.type">{{type}}</option>
+                <select class="form-control" id="InputType" [(ngModel)]="searchNode.applicationType">
+                    <option *ngFor="let applicationType of applicationTypes" [value]="applicationType._id" (select)="searchNode.applicationType">{{applicationType.name}}</option>
                 </select>
             </div>
         </div>
@@ -60,20 +60,22 @@
         <th>Title</th>
         <th>Author</th>
         <th>Type</th>
+        <th>Status</th>
         <th></th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let application of applications">
-        <td (click)="onSelect(application)">{{application.created | isoDate: "d mmmm yyyy" }}</td>
         <td (click)="onSelect(application)">{{application.name}}</td>
+        <td (click)="onSelect(application)">{{application.created | isoDate: "d mmmm yyyy" }}</td>
         <td (click)="onSelect(application)">{{application.user.name}}</td>
-        <td (click)="onSelect(application)">{{application.type}}</td>
+        <td (click)="onSelect(application)">{{application.applicationType.name}}</td>
+        <td (click)="onSelect(application)">{{application.status}}</td>
         <td class="delete-cell">
             <i *ngIf="(application.user._id === currentUser._id || currentUser.roles.indexOf('admin') >= -1) && application.status === 'active'"
-               (click)="deleteNode($event, application._id)" class="fa fa-minus-square" title="Delete Application"></i>
+               (click)="deleteApplication(application._id)" class="fa fa-minus-square" title="Delete Application"></i>
             <i *ngIf="(application.user._id === currentUser._id || currentUser.roles.indexOf('admin') >= -1) && application.status === 'deleted'"
-               (click)="restoreNode($event, application)" class="fa fa-plus-square" title="Restore Application"></i>
+               (click)="restoreApplication(application)" class="fa fa-plus-square" title="Restore Application"></i>
         </td>
     </tr>
     </tbody>

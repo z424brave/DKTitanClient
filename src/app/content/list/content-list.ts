@@ -12,8 +12,8 @@ import {IsoDatePipe} from '../../common/iso-date-pipe';
 import {UpdateFromSelectValue} from '../../common/model/update-from-select-value';
 import {UpdateFromSelect} from '../../common/directives/update-from-select/update-from-select';
 import {Application} from "../../common/model/node/application";
-
-let _ = require('lodash');
+import {ApplicationType} from "../../common/model/node/application-type";
+import {ApplicationTypeService} from "../../common/service/applicationType-service";
 
 @Component({
     selector: 'content-list',
@@ -21,12 +21,13 @@ let _ = require('lodash');
     pipes: [IsoDatePipe],
     template: require('./content-list.html'),
     styles: [require('./content-list.css'), require('../../app.css')],
-    providers: [ApplicationService, UserService, TagService]
+    providers: [ApplicationService, ApplicationTypeService, UserService, TagService]
 })
 
 export class ContentList implements OnInit {
 
     constructor(private _applicationService: ApplicationService,
+                private _applicationTypeService: ApplicationTypeService,
                 private _router: Router,
                 private _userService: UserService,
                 private _authService: AuthService) {
@@ -39,33 +40,33 @@ export class ContentList implements OnInit {
 
     allValues: Array<UpdateFromSelectValue> = [];
     applications: Application[] = [];
+    applicationTypes: ApplicationType[] = [];
     statuses = ['','active', 'deleted'];
-    types = ['','text','html','image'];
     users: Array<User> = [];
     currentUser: User;
 
-/*    public deleteNode($event, applicationId) {
+    public deleteApplication(applicationId) {
 
-        console.log(`in deleteNode for ${applicationId}`);
-        $event.preventDefault();
+        console.log(`in deleteApplication for ${applicationId}`);
         this._applicationService.deleteApplication(applicationId)
-            .subscribe(
-                this._getUserNodes(this.currentUser._id)
+            .subscribe( () => {
+                    this.search();
+                }
             );
 
-    }*/
+    }
 
-/*    public restoreApplication($event, application) {
+    public restoreApplication(application) {
 
-        console.log(`in restoreNode for ${JSON.stringify(application)} : ${JSON.stringify(this.searchNode.user)}`);
-        $event.preventDefault();
+        console.log(`in restoreApplication for ${JSON.stringify(application)} : ${JSON.stringify(this.searchNode.user)}`);
         application.status = 'active';
         this._applicationService.updateApplication(application)
-            .subscribe(
-                this._getUserNodes(this.currentUser._id)
-            );
+            .subscribe( () => {
+                this.search();
+            }
+        );
 
-    }*/
+    }
 
     public onSelect(application: Application) {
 
@@ -114,8 +115,8 @@ export class ContentList implements OnInit {
     public ngOnInit() {
 
         console.log(`In content-list / ngOnInit`);
-        this._getUserList();
         this._setDefaultSearchTerms();
+        this._getUserList();
         this.search();
     }
 
@@ -131,6 +132,27 @@ export class ContentList implements OnInit {
                     user._id = '';
                     this.users.unshift(user);
                     console.log(`Users are : ${JSON.stringify(this.users)}`);
+                    this._getApplicationTypes(this.searchNode);
+                }
+            );
+
+    }
+
+    private _getApplicationTypes(searchNode: SearchNode) {
+
+        console.log(`in _getApplicationTypes`);
+        this.searchNode.user = "";
+        this.searchNode.status = "";
+        this._applicationTypeService.listApplicationTypes(searchNode)
+            .subscribe(
+                data => {
+                    this.applicationTypes = data;
+                    let applicationType = new ApplicationType();
+                    applicationType.name = '';
+                    applicationType._id = '';
+                    this.applicationTypes.unshift(applicationType);
+                    console.log(`ApplicationTypes are : ${JSON.stringify(this.applicationTypes)}`);
+                    this._setDefaultSearchTerms();
                 }
             );
 

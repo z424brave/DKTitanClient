@@ -45,23 +45,25 @@
             <tr>
                 <th>Tag Name</th>
                 <th>Tag Description</th>
-                <th>Remove</th>
+                <th>Tag Status</th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let tag of tags | paginate: { itemsPerPage: 6, currentPage: p }" >
+            <tr (click)="onSelectTag(tag._id)" *ngFor="let tag of tags | paginate: { itemsPerPage: 6, currentPage: p }" >
                 <td>
                     {{tag.name}}
                 </td>
                 <td>
                     {{tag.description}}
                 </td>
-                <td class="delete-cell">
-                    <i (click)="removeTag(tag._id)" class="fa fa-minus-square"></i>
+                <td>
+                    {{tag.status}}
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
+
     <pagination-controls (pageChange)="p = $event" autoHide="true"></pagination-controls>
+
 </div>

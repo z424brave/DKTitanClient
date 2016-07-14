@@ -1,7 +1,7 @@
 /**
  * Created by Damian.Kelly on 01/07/2016.
  */
-import {OnInit, Component, AfterContentInit, AfterContentChecked, AfterViewInit, AfterViewChecked } from "@angular/core";
+import {OnInit, Component, AfterContentInit, AfterViewInit, AfterViewChecked, ViewChild} from "@angular/core";
 import {Router, RouteParams, CanActivate, ComponentInstruction} from "@angular/router-deprecated";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "@angular/common";
 import {TAB_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap";
@@ -25,7 +25,7 @@ import {ImageBox} from "../../common/directives/image-box/image-box";
 import {TreeNode} from "../../common/model/tree-node";
 import {TreeView} from "../../common/directives/tree-view/tree-view";
 import {TreeNodeService} from "../../common/service/tree-node-service";
-import {ContentPublish} from "../../node/detail/publish/content-publish";
+import {ContentPublish} from "../../content/detail/publish/content-publish";
 import {ContentEditjson} from "../../node/detail/edit/content-editjson";
 import {Application} from "../../common/model/node/application";
 import {ApplicationService} from "../../common/service/application-service";
@@ -49,7 +49,7 @@ let _ = require('lodash');
     return authCheck('user', next, previous);
 })
 
-export class ContentDetail implements OnInit, AfterContentChecked, AfterContentInit,
+export class ContentDetail implements OnInit, AfterContentInit,
     AfterViewInit, AfterViewChecked {
 
     urlPrefix: string = EXTERNAL_URL_PREFIX;
@@ -65,7 +65,7 @@ export class ContentDetail implements OnInit, AfterContentChecked, AfterContentI
     isNewContentNode: boolean;
     saveAction: string;
     s3Node: TreeNode = null;
-    contentTypes: String[] = ['john','paul']
+    contentTypes: String[] = ['Game Launcher Game Page','Game Launcher Slide Page']
     textNodes: ContentNode[];
     imageNodes: ContentNode[];
 
@@ -73,6 +73,9 @@ export class ContentDetail implements OnInit, AfterContentChecked, AfterContentI
 
     private submitted: boolean;
     private supportedLanguages = [];
+
+    @ViewChild(ContentPublish)
+    private contentPublish: ContentPublish;
 
     constructor(private _applicationService: ApplicationService,
                 private _authService: AuthService,
@@ -164,13 +167,6 @@ export class ContentDetail implements OnInit, AfterContentChecked, AfterContentI
 
     }
 
-    ngAfterContentChecked() {
-
-        console.log(`In content-details / ngAfterContentChecked`);
-        console.log(`ngAfterContentChecked - contentNode : ${JSON.stringify(this.contentNode)}`);
-
-    }
-
     onSubmit(valid) {
 
         this.submitted = true;
@@ -251,7 +247,7 @@ export class ContentDetail implements OnInit, AfterContentChecked, AfterContentI
 
     onTypeChanged($event) {
         console.log(`onTypeChanged ${$event}`);
-        this.contentNode.applicationType = _.find(this.types, (t) => {
+        this.contentNode.applicationType = _.find(this.contentTypes, (t) => {
             console.log(`onTypeChanged : ${t}`);
             return t === $event;
         });
@@ -290,6 +286,8 @@ export class ContentDetail implements OnInit, AfterContentChecked, AfterContentI
 
         console.log(`Publish - ${JSON.stringify($event)}`);
         $event.preventDefault();
+        this.contentPublish.node = this.contentNode;
+        this.contentPublish.showPublish(`Lets publish this - ${this.contentNode.name}`);
         console.log(`Publish - ${this.contentNode.name}`);
 
     }

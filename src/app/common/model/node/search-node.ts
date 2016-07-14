@@ -8,6 +8,7 @@ export class SearchNode extends BaseEntity {
     status: string;
     contains: string;
     lexicon: string;
+    applicationType: string;
 	
     constructor() {
         super();

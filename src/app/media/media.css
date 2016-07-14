@@ -17,3 +17,7 @@
 .new-folder-btn {
     float: left;
 }
+
+.tree-view-pad {
+    height: 20px;
+}

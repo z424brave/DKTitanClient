@@ -1,5 +1,5 @@
 /**
- * Created by Damian.Kelly on 01/07/2016.
+ * Created by Damian.Kelly on 14/07/2016.
  */
 import {Injectable} from '@angular/core';
 import {URLSearchParams} from '@angular/http';
@@ -10,21 +10,21 @@ import {ApplicationError} from '../error';
 import {Observable} from 'rxjs/Observable';
 import {SearchNode} from './../model/node/search-node';
 import {Notification} from '../directives/notification-center/notification';
-import {Application} from '../model/node/application';
 import 'rxjs/Rx';
+import {ApplicationType} from "../model/node/application-type";
 
 
 @Injectable()
-export class ApplicationService {
+export class ApplicationTypeService {
 
     private baseUrl: string;
 
     constructor(private _httpClient: HttpClient,
                 private _notificationService: NotificationService) {
-        this.baseUrl = API_ENDPOINT.concat('/applications/');
+        this.baseUrl = API_ENDPOINT.concat('/applicationTypes/');
     }
 
-    getApplication(id: string) {
+    getApplicationType(id: string) {
         return Observable.create(observer => {
             this._httpClient.get(this.baseUrl.concat(id))
                 .map((responseData) => {
@@ -34,7 +34,7 @@ export class ApplicationService {
                     data => observer.next(data),
                     err => this._notificationService.handleError(
                         new ApplicationError(
-                            'Error loading node',
+                            'Error fetching applicationType',
                             err)
                     ),
                     () => observer.complete()
@@ -43,11 +43,11 @@ export class ApplicationService {
         });
     }
 
-    listApplications(searchNode: SearchNode) {
+    listApplicationTypes(searchNode: SearchNode) {
 
-        console.log(`In listApplications - ${JSON.stringify(searchNode)}`);
+        console.log(`In listApplicationTypes - ${JSON.stringify(searchNode)}`);
         return Observable.create(observer => {
-            this._httpClient.getQuery(this.baseUrl.concat('list'), ApplicationService.convertSearchToQuery(searchNode))
+            this._httpClient.getQuery(this.baseUrl.concat('list'), ApplicationTypeService.convertSearchToQuery(searchNode))
                 .map((responseData) => {
                     console.log(`list applications - ${JSON.stringify(responseData)}`);
                     return responseData.json();
@@ -91,9 +91,9 @@ export class ApplicationService {
         return params;
     }
 
-    createApplication(application: Application) {
+    createApplicationType(applicationType: ApplicationType) {
         return Observable.create(observer => {
-            this._httpClient.post(this.baseUrl, JSON.stringify(application))
+            this._httpClient.post(this.baseUrl, JSON.stringify(applicationType))
                 .map((responseData) => {
                     return responseData.json();
                 })
@@ -102,13 +102,13 @@ export class ApplicationService {
                         observer.next(data);
                         this._notificationService.publish(
                             new Notification(
-                                'Application saved successfully',
+                                'ApplicationType saved successfully',
                                 Notification.types.SUCCESS)
                         );
                     },
                     err => this._notificationService.handleError(
                         new ApplicationError(
-                            'Error saving application',
+                            'Error saving applicationType',
                             err)
                     ),
                     () => observer.complete()
@@ -116,11 +116,10 @@ export class ApplicationService {
         });
     }
 
-
-    updateApplication(application: Application) {
+    updateApplicationType(applicationType: ApplicationType) {
         return Observable.create(observer => {
-            console.log(`applicationService / updateApplication : ${JSON.stringify(application)}`);
-            this._httpClient.put(this.baseUrl.concat(application._id), JSON.stringify(application))
+            console.log(`applicationTypeService / updateApplicationType : ${JSON.stringify(applicationType)}`);
+            this._httpClient.put(this.baseUrl.concat(applicationType._id), JSON.stringify(applicationType))
                 .map((responseData) => {
                     return responseData.json();
                 })
@@ -129,13 +128,13 @@ export class ApplicationService {
                         observer.next(data);
                         this._notificationService.publish(
                             new Notification(
-                                'Application updated successfully',
+                                'ApplicationType updated successfully',
                                 Notification.types.SUCCESS)
                         );
                     },
                     err => this._notificationService.handleError(
                         new ApplicationError(
-                            'Error updating application',
+                            'Error updating ApplicationType',
                             err)
                     ),
                     () => observer.complete()
@@ -143,49 +142,4 @@ export class ApplicationService {
         });
     }
 
-    deleteApplication(applicationId: string){
-        return Observable.create(observer => {
-            this._httpClient.delete(this.baseUrl.concat(applicationId))
-                .map((responseData) => {
-                    console.log(`return from delete - ${JSON.stringify(responseData)}`);
-                    return responseData.json();
-                })
-                .subscribe(
-                    data => observer.next('SUCCESS'),
-                    err => this._notificationService.handleError(
-                        new ApplicationError(
-                            'Error removing application',
-                            err)
-                    ),
-                    () => observer.complete()
-                );
-        });
-
-    }
-
-    publishApplication(application: Application, targetFileName: string) {
-        return Observable.create(observer => {
-            console.log(`applicationService / publishApplication : ${JSON.stringify(application)}`);
-            this._httpClient.put(this.baseUrl.concat('publish/').concat(application._id).concat('?fileName=').concat(targetFileName), JSON.stringify(application))
-                .map((responseData) => {
-                    return responseData.json();
-                })
-                .subscribe(
-                    data => {
-                        observer.next(data);
-                        this._notificationService.publish(
-                            new Notification(
-                                'Application published successfully',
-                                Notification.types.SUCCESS)
-                        );
-                    },
-                    err => this._notificationService.handleError(
-                        new ApplicationError(
-                            'Error publishing application',
-                            err)
-                    ),
-                    () => observer.complete()
-                );
-        });
-    }
 }

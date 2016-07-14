@@ -37,6 +37,7 @@ export class TagDetail implements OnInit {
     submitted: boolean = false;
     lexicons: Lexicon[];
     selectedLexicon: string = "";
+    defaultLexicon: Lexicon[];
 
     constructor(private _formBuilder: FormBuilder,
                 private _tagService: TagService,
@@ -45,7 +46,6 @@ export class TagDetail implements OnInit {
                 private _router: Router)
     {
         this.tag = new Tag();
-        this.tag.lexicon = new Lexicon();
 
     }
 
@@ -55,9 +55,10 @@ export class TagDetail implements OnInit {
             .subscribe(
                 data => {
                     this.lexicons = data;
-                    let lexicon = new Lexicon();
-                    lexicon._id = "";
-                    this.lexicons.unshift(lexicon);
+                    this.defaultLexicon = this.lexicons.filter((l: Lexicon) => {
+                        return l.name ==='Default'
+                    });
+                    console.log(`default lexicon is ${this.defaultLexicon[0]._id}`);
                     this._init();
                 }
 
@@ -76,13 +77,14 @@ export class TagDetail implements OnInit {
 
     private _initForm() {
         console.log('initiating form: ' + JSON.stringify(this.tag));
+        this.selectedLexicon = this.tag.lexicon ? this.tag.lexicon._id : this.defaultLexicon[0]._id;
+        console.log(`_initForm: ${this.selectedLexicon}`);
     }
 
     private _getTag(id: string) {
         this._tagService.getTag(id).subscribe(
             data => {
                 this.tag = data;
-                this.selectedLexicon = this.tag.lexicon ? this.tag.lexicon._id : "";
                 this._initForm();
             }
         );

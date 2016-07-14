@@ -6,14 +6,14 @@
     <div class="col-md-8">
         <label>&nbsp;</label>
         <div class="form-inline new-content-btn">
-            <input type="text" [(ngModel)]="newFolder" class="form-control text-input">
+            <input type="text" [(ngModel)]="newFolder" class="form-control text-input pull-right">
             <button type="submit" class="btn btn-success" (click)="addFolder(newFolder)">Add Folder</button>
         </div>
     </div>
 </div>
     <div class="row">
     <div class="col-md-4">
-        <div style="height: 20px;"></div>
+        <div class="tree-view-pad"></div>
         <tree-view [root]="node"></tree-view>
     </div>
     <div class="col-md-8">

@@ -6,6 +6,7 @@ import {User} from '../user/user';
 import {ContentNode} from "./content-node";
 import {ApplicationType} from "./application-type";
 import {TagValue} from "../lexicon/tag-value";
+import {GroupNode} from "./group-node";
 
 export class Application extends BaseEntity {
 
@@ -16,6 +17,7 @@ export class Application extends BaseEntity {
     status: string;
     publishable: boolean;
     nodes: ContentNode[];
+    applicationGroups: GroupNode[];
 
     
     constructor() {

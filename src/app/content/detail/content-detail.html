@@ -37,38 +37,43 @@
         </div>
     </div>
     <div class="row">
-    <div class="form-buttons">
-        <button type="submit" class="btn btn-success">{{saveAction}}</button>
-        <button class="btn btn-default" (click)="translate($event)">Translate</button>
-        <button class="btn btn-default" (click)="publish($event)">Publish</button>
-        <button class="btn btn-default" (click)="cancel($event)">Cancel</button>
-    </div>
+        <div class="col-md-12">
+            <div class="form-buttons">
+                <button class="btn btn-success" type="submit">{{saveAction}}</button>
+                <button class="btn btn-default" (click)="translate($event)">Translate</button>
+                <button class="btn btn-default" (click)="publish($event)">Publish</button>
+                <button class="btn btn-default" (click)="cancel($event)">Cancel</button>
+            </div>
+        </div>
     </div>
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <tabset>
-                <tab *ngFor="let languageTab of languageTabs"
-                    [heading]="languageTab.title"
-                    [active]="languageTab.active"
-                    (deselect)="languageTab.active = false"
-                    (select)="selectTab(languageTab)"
-                    [disabled]="languageTab.disabled">
-                    <div class="row" *ngIf="languageTab.title==='text/html'">
-                        <div class="col-md-8" *ngFor="let textNode of textNodes">
-                            <div class="form-group">
-                                <label>{{textNode.name}}</label>
-                                <input type="text" [ngModel]="textNode.content[0].media[0].content"
-                                       class="form-control" value="textNode.content[0].media[0].content" />
-                            </div>
+                <tab *ngFor="let nodeTab of nodeTabs"
+                    [heading]="nodeTab.title"
+                    [active]="nodeTab.active"
+                    (deselect)="nodeTab.active = false"
+                    (select)="selectTab(nodeTab)"
+                    [disabled]="nodeTab.disabled">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <content-image *ngIf="nodeTab.contentNode.type==='image'" [contentNode]="nodeTab.contentNode"></content-image>
+                            <content-text *ngIf="nodeTab.contentNode.type!=='image'" [contentNode]="nodeTab.contentNode"></content-text>
                         </div>
                     </div>
-                    <div class="row" *ngIf="!(languageTab.title==='text/html')">
-                        <div class="col-md-8" *ngFor="let imageNode of imageNodes">
-                            <div *ngIf="imageNode.content[0].media[0].content">
-                                <image-box [imageFileName]="imageNode.content[0].media[0].content"></image-box>
-                            </div>
-                            <div *ngIf="!imageNode.content[0].media[0].content" class="row">
-                                <file-upload (onUploaded)="onUploaded($event)" (onFileNameSaved)="onFileNameSaved($event)"></file-upload>
+                 </tab>
+                <tab *ngFor="let groupTab of groupTabs"
+                     [heading]="groupTab.title"
+                     [active]="groupTab.active"
+                     (deselect)="groupTab.active = false"
+                     (select)="selectGroupTab(groupTab)"
+                     [disabled]="groupTab.disabled">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{groupTab.groupNode.name}}</label>
+                                <input type="text" [ngModel]="groupTab.groupNode.name"
+                                       class="form-control" value="groupTab.groupNode.name" />
                             </div>
                         </div>
                     </div>

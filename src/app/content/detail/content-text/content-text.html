@@ -1,0 +1,63 @@
+<div class="row">
+    <div class="col-md-8">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="InputType">Type</label>
+                    <select class="form-control" required id="InputType" [(ngModel)]="contentNode.type">
+                        <option *ngFor="let type of types" [value]="type" (select)="contentNode.type">{{type}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label for="InputVersionNumber">Version number</label>
+                <input type="number"
+                       [(ngModel)]="displayVersionNumber"
+                       class="form-control" id="InputVersionNumber"
+                       readonly>
+            </div>
+            <div class="col-md-8">
+                <label for="InputVersionMessage">Version message</label>
+                <input type="text"
+                       [(ngModel)]="displayVersionMessage"
+                       class="form-control" id="InputVersionMessage"
+                       placeholder="Version message"  [readonly]="!isCurrentVersion">
+             </div>
+        </div>
+
+        <div *ngIf="contentNode.type==='text'">
+            <br>
+            <label>{{contentNode.name}}</label>
+            <input type="text" [(ngModel)]="editorContent"
+                   [readonly]="!isCurrentVersion" (change)="editorContentChanged($event)"
+                   class="form-control" />
+        </div>
+        <div *ngIf="contentNode.type==='html'">
+            <br>
+            <label>{{contentNode.name}}</label>
+            <inline-editor [(ngModel)]="editorContent"
+                           (change)="editorContentChanged($event)"
+                           [config]="{uiColor: '#99000', readOnly: !isCurrentVersion}">
+            </inline-editor>
+        </div>
+
+        <div *ngIf="isCurrentVersion" class="form-buttons">
+            <button class="btn btn-success" (click)="onSubmit($event)">{{saveAction}}</button>
+            <button class="btn btn-default" (click)="cancel($event)">Cancel</button>
+        </div>
+
+    </div>
+    <div *ngIf="!isNewNode" class="col-md-4">
+        <h3>History</h3>
+        <ul class="fa-ul">
+            <li *ngFor="let content of contentNode.content | versionSort" class="content-version">
+                <span (click)="changeVersion(content)">
+                    <i class="fa-li fa fa-file-code-o"></i>
+                    {{content.versionNo}} - {{content.versionMessage}}
+                </span>
+            </li>
+        </ul>
+    </div>
+</div>

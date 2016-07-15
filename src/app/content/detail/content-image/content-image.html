@@ -1,0 +1,19 @@
+<div class="row">
+    <div *ngIf="contentNode.content[0].media[0].content" class="col-md-8">
+        <image-box [imageFileName]="contentNode.content[0].media[0].content"></image-box>
+    </div>
+    <div *ngIf="!contentNode.content[0].media[0].content" class="col-md-8">
+        <file-upload (onUploaded)="onUploaded($event)" (onFileNameSaved)="onFileNameSaved($event)"></file-upload>
+    </div>
+    <div *ngIf="!isNewNode" class="col-md-4">
+        <h3>History</h3>
+        <ul class="fa-ul">
+            <li *ngFor="let content of contentNode.content" class="content-version">
+                    <span (click)="changeVersion(content)">
+                        <i class="fa-li fa fa-file-code-o"></i>
+                        {{content.versionNo}} - {{content.versionMessage}}
+                    </span>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -30,14 +30,18 @@ import {ContentEditjson} from "../../node/detail/edit/content-editjson";
 import {Application} from "../../common/model/node/application";
 import {ApplicationService} from "../../common/service/application-service";
 import {ContentNode} from "../../common/model/node/content-node";
-import {ContentTab} from "../../node/tab/content-tab";
-import {NodeType} from "../../common/model/node/node-type";
+import {NodeTab} from "../../common/model/node/node-tab";
+import {GroupTab} from "../../common/model/node/group-tab";
+import {GroupNode} from "../../common/model/node/group-node";
+import {ContentImage} from "./content-image/content-image";
+import {ContentText} from "./content-text/content-text";
 
 let _ = require('lodash');
 
 @Component({
     directives: [InlineEditor, TAB_DIRECTIVES, CORE_DIRECTIVES,
-        FORM_DIRECTIVES, MainMenu, UpdateFromSelect,
+        FORM_DIRECTIVES, MainMenu, UpdateFromSelect,ContentImage,
+        ContentText,
         FileUpload, ImageBox, TreeView, ContentPublish, ContentEditjson],
     providers: [ContentService, TagService, LanguageService, TreeNodeService],
     template: require('./content-detail.html'),
@@ -66,10 +70,9 @@ export class ContentDetail implements OnInit, AfterContentInit,
     saveAction: string;
     s3Node: TreeNode = null;
     contentTypes: String[] = ['Game Launcher Game Page','Game Launcher Slide Page']
-    textNodes: ContentNode[];
-    imageNodes: ContentNode[];
 
-    private languageTabs: Array<NodeType> = [];
+    private nodeTabs: Array<NodeTab> = [];
+    private groupTabs: Array<GroupTab> = [];
 
     private submitted: boolean;
     private supportedLanguages = [];
@@ -84,8 +87,7 @@ export class ContentDetail implements OnInit, AfterContentInit,
 
         this.contentNode = new Application();
         console.log(`constructor - contentNode : ${JSON.stringify(this.contentNode)}`);
-        this.languageTabs.push(new NodeType('text/html',true, false));
-        this.languageTabs.push(new NodeType('Background Image',false, true));
+
     }
 
     private _initNode() {
@@ -123,14 +125,28 @@ export class ContentDetail implements OnInit, AfterContentInit,
                     console.log(`Node : ${JSON.stringify(this.contentNode)}`);
                     console.log(`Node : ${this.contentNode.applicationType.name}`);
                     this.currentVersion = false;
-                    this.textNodes = this.contentNode.nodes.filter((cNode: ContentNode ) => {
-                        return cNode.type === 'text';
+                    this.contentNode.nodes.forEach((cNode: ContentNode ) => {
+                        this.nodeTabs.push(new NodeTab(cNode, false, false));
                     });
-                    this.imageNodes = this.contentNode.nodes.filter((cNode: ContentNode ) => {
-                        return cNode.type === 'image';
+                    this.contentNode.applicationGroups.forEach((gNode: GroupNode ) => {
+                        this.groupTabs.push(new GroupTab(gNode, false, false));
                     });
-                    console.log(`content-detail : ${this.contentNode.name} - ${this.textNodes.length} text nodes` );
-                    console.log(`content-detail : ${this.contentNode.name} - ${this.imageNodes.length} image nodes` );
+                    console.log(`content-detail : ${this.contentNode.name} - ${this.nodeTabs.length} nodes` );
+                    console.log(`content-detail : ${this.contentNode.name} - ${this.groupTabs.length} groups` );
+                    if (this.nodeTabs.length > 0) {
+                        this.nodeTabs[0].active = true;
+                    } else {
+                        if (this.groupTabs.length > 0) {
+                            this.groupTabs[0].active = true;
+                        }
+                    }
+                    if (this.groupTabs.length > 0) {
+                        this.groupTabs[this.groupTabs.length - 1].isLast = true;
+                    } else {
+                        if (this.nodeTabs.length > 0) {
+                            this.nodeTabs[this.nodeTabs.length - 1].isLast = true;
+                        }
+                    }
                 }
             );
 
@@ -278,6 +294,13 @@ export class ContentDetail implements OnInit, AfterContentInit,
     selectTab(tab) {
 
         console.log(`In selectTab - ${tab.title} - ${tab.active}`);
+        if (!tab.active) {tab.active = true;}
+
+    }
+
+    selectGroupTab(tab) {
+
+        console.log(`In selectGroupTab - ${tab.title} - ${tab.active}`);
         if (!tab.active) {tab.active = true;}
 
     }
